@@ -19,13 +19,16 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 //Client side routing fix on page refresh or direct browsing to non-root directory
-app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "index.html"), (err) => {
-    if (err) {
-      res.status(500).send(err);
-    }
+const http = require('http');
+const fs = require('fs');
+
+http.createServer(function (req, res) {
+  fs.readFile('index.html', function(err, data) {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.write(data);
+    res.end();
   });
-});
+}).listen(8080);
 
 //Start the server
 app.listen(port, () => console.log(`Monolith listening on port ${port}!`));
